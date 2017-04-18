@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Relay from 'react-relay';
 
 import QueryAggregator from './QueryAggregator';
 
 const propTypes = {
   location: PropTypes.object.isRequired,
   children: PropTypes.element.isRequired,
+  Relay: PropTypes.object.isRequired,
 };
 
 const childContextTypes = {
@@ -40,9 +40,12 @@ class RelayRouterContext extends React.Component {
   };
 
   render() {
+    const { Relay, props } = this.props;
+
     return (
       <Relay.Renderer
-        {...this.props}
+        environment={Relay.Store}
+        {...props}
         Container={this.queryAggregator}
         render={this.renderCallback}
         queryConfig={this.queryAggregator.queryConfig}

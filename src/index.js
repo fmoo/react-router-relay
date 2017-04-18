@@ -1,31 +1,39 @@
 import React from 'react';
+import Relay from 'react-relay';
 
 import RelayRouterContext from './RelayRouterContext';
 import RouteContainer from './RouteContainer';
 import getRouteQueries from './utils/getRouteQueries';
 
-export default {
-  renderRouterContext: (child, props) => (
-    <RelayRouterContext {...props}>
-      {child}
-    </RelayRouterContext>
-  ),
-
-  renderRouteComponent: (child, props) => {
-    /* eslint-disable react/prop-types */
-    const { key, route } = props;
-    /* eslint-enable react/prop-types */
-
-    const routeQueries = getRouteQueries(route, props);
-    const queries = key ? routeQueries && routeQueries[key] : routeQueries;
-    if (!queries) {
-      return child;
-    }
-
-    return (
-      <RouteContainer queries={queries} routerProps={props}>
+function useWithCustomRelay(relay) {
+  return {
+    renderRouterContext: (child, props) => (
+      <RelayRouterContext Relay={relay} {...props}>
         {child}
-      </RouteContainer>
-    );
-  },
+      </RelayRouterContext>
+    ),
+
+    renderRouteComponent: (child, props) => {
+      /* eslint-disable react/prop-types */
+      const { key, route } = props;
+      /* eslint-enable react/prop-types */
+
+      const routeQueries = getRouteQueries(route, props);
+      const queries = key ? routeQueries && routeQueries[key] : routeQueries;
+      if (!queries) {
+        return child;
+      }
+
+      return (
+        <RouteContainer queries={queries} routerProps={props}>
+          {child}
+        </RouteContainer>
+      );
+    },
+  };
+}
+
+export {
+  useWithCustomRelay,
 };
+export default useWithCustomRelay(Relay);
